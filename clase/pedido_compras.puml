@@ -1,0 +1,57 @@
+@startuml Pedido de Compras
+title Modelo de dominio parcial de Pedido de Compras
+
+class       Producto {
+                caducidad
+                númeroDeSerie
+            }
+class       EspecificaciónDelProducto {
+                descripción
+                precio
+                productoID
+            }
+class       Producto
+class       EspecificaciónDelProducto
+class       FormularioDePedidoDeCompras
+class       Depósito
+class       Pedido
+class       EncargadoDeCompra
+class       Lote
+class       Caja
+class       Anaquel
+class       Vitrina
+Class       Vacuna
+class       RefrigeradorDeVacunas
+class       Blister {
+                nroDeUnidades
+            }
+class       Frasco
+class       BoteDeComprimidos
+class       TabletasEnUnBlister
+class       JarabeEnUnFrasco
+class       MedicamentosEnUnCajón
+class       VacunasEnUnRefrigerador
+class       Venda
+class       VendasEnUnBotiquín
+class       Inventario
+class       Caducidad
+class       Descuento
+class       Alerta
+class       RecepciónDeProductos
+class       CatálogoDeProductos
+class       CatálogoDeProveedores
+class       CatálogoDeMedicamentosControlados
+class       RegistroDeInventario
+class       FacturasDeProveedores
+
+note left of Blister::nroDeUnidades
+    "Pueden ser pastillas o cápsulas"
+end note
+
+EspecificaciónDelProducto "1" -- "*" Producto: "Describe"
+Depósito "1" -- "*" Lote: "Está asignado a"
+VendasEnUnBotiquín "1" -- "*" Venda: "Tiene"
+RefrigeradorDeVacunas "1" -- "*" Vacuna: "Está asignado a"
+
+
+@enduml

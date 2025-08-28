@@ -1,0 +1,26 @@
+@startuml Pedido de Compras modo caja negra
+title Pedido de Compras modo caja negra
+
+skinparam sequenceMessageAlign center
+actor "Personal de Compras" as pc
+
+pc -> Sistema: iniciarRegistrarPedidos()
+pc <-- Sistema: usuario, depositos, proveedores
+|||
+pc -> Sistema: crearNuevoPedido()
+pc -> Sistema: introducirProveedor(RUC)
+pc <-- Sistema: provID, provDescrip
+|||
+|||
+pc -> Sistema: introducirDeposito(depID)
+pc <-- Sistema: depID, depDescrip
+
+loop "Hasta que se indique"
+    pc -> Sistema: introducirProducto(prodID, cantidad)
+    pc <-- Sistema: descripcion
+end
+|||
+pc -> Sistema: finalizarPedido()
+|||
+pc <-- Sistema: mensajeExito()
+@enduml

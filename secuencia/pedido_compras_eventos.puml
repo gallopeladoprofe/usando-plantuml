@@ -1,0 +1,18 @@
+@startuml Pedido de Compras modo caja negra
+title Pedido de Compras solo eventos del sistema
+
+skinparam sequenceMessageAlign center
+actor "Personal de Compras" as pc
+
+pc -> Sistema: iniciarRegistrarPedidos()
+|||
+pc -> Sistema: crearNuevoPedido()
+|||
+pc -> Sistema: introducirProveedor(RUC)
+|||
+pc -> Sistema: introducirDeposito(depID)
+|||
+pc -> Sistema: introducirProducto(prodID, cantidad)
+|||
+pc -> Sistema: finalizarPedido()
+@enduml

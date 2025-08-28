@@ -1,0 +1,55 @@
+@startuml Pedido de Compras
+title Pedido de Compras Completo
+skinparam sequenceMessageAlign center
+actor "Personal de Compras" as pc
+
+boundary PedidoCompraUI <<boundary>>
+control "Conexion" as Conexion <<control>>
+entity usuarios <<entity>>
+entity depositos <<entity>>
+entity proveedores <<entity>>
+entity pedidocab <<entity>>
+entity pedidodet <<entity>>
+
+pc -> PedidoCompraUI: iniciarRegistrarPedidos()
+
+
+PedidoCompraUI -> Conexion: iniciarConexion()
+PedidoCompraUI <-- Conexion: ok
+
+
+PedidoCompraUI -> usuarios: obtenerUsuarios()
+PedidoCompraUI <-- usuarios: ok
+
+
+PedidoCompraUI -> depositos: obtenerDepositos()
+PedidoCompraUI <-- depositos: ok
+
+
+PedidoCompraUI -> proveedores: obtenerProveedores()
+PedidoCompraUI <-- proveedores: ok
+
+
+pc -> PedidoCompraUI: crearNuevoPedido()
+
+pc -> PedidoCompraUI: introducirProveedor(RUC)
+PedidoCompraUI -> PedidoCompraUI: buscarProveedor(RUC)
+
+|||
+pc -> PedidoCompraUI: introducirDeposito(depID)
+PedidoCompraUI -> PedidoCompraUI: buscarDeposito(depID)
+
+loop "Hasta que se indique"
+    pc -> PedidoCompraUI: introducirProducto(prodID, cantidad)
+    PedidoCompraUI -> PedidoCompraUI: buscarProducto(depID), agregarProducto(depID)
+end
+|||
+pc -> PedidoCompraUI: registrarPedido(ListaProductos)
+
+PedidoCompraUI -> pedidocab
+
+
+pedidocab -> pedidodet
+|||
+pc <-- PedidoCompraUI: mensajeExito()
+@enduml
