@@ -26,15 +26,15 @@ class       Blister {
                 nroDeUnidades
             }
 class       Frasco
-class       BoteDeComprimidos
-class       TabletasEnUnBlister
-class       JarabeEnUnFrasco
-class       MedicamentosEnUnCajón
-class       VacunasEnUnRefrigerador
+
+class       Jarabe
+class       Cajón
+class       Medicamento
+
 class       Venda
-class       VendasEnUnBotiquín
+class       Botiquín
 class       Inventario
-class       Caducidad
+
 class       Descuento
 class       Alerta
 class       RecepciónDeProductos
@@ -49,9 +49,16 @@ note left of Blister::nroDeUnidades
 end note
 
 EspecificaciónDelProducto "1" -- "*" Producto: "Describe"
+EspecificaciónDelProducto "1" -- "*" Blister: "Describe"
 Depósito "1" -- "*" Lote: "Está asignado a"
-VendasEnUnBotiquín "1" -- "*" Venda: "Tiene"
+Botiquín "1" -- "*" Venda: "Tiene"
 RefrigeradorDeVacunas "1" -- "*" Vacuna: "Está asignado a"
+
+Lote "1" -- "*" Producto: "contiene a"
+Lote "1" -- "*" Vacuna: "contiene a"
+
+Jarabe "1" -- "1" Frasco: "esta en un"
+Cajón "1" -- "*" Medicamento: "contiene a los"
 
 
 @enduml
