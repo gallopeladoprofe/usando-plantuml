@@ -1,57 +1,110 @@
-@startuml Pedido de Compras
-title Modelo de dominio parcial de Pedido de Compras
+@startuml Pedido de Compras Mejorado
+title Modelo de dominio de Pedido de Compras (Mejorado)
 
-class       Producto {
-                caducidad
-                númeroDeSerie
-            }
-class       EspecificaciónDelProducto {
-                descripción
-                precio
-                productoID
-            }
-class       Producto
-class       EspecificaciónDelProducto
-class       FormularioDePedidoDeCompras
-class       Depósito
-class       Pedido
-class       EncargadoDeCompra
-class       Lote
-class       Caja
-class       Anaquel
-class       Vitrina
-Class       Vacuna
-class       RefrigeradorDeVacunas
-class       Blister {
-                nroDeUnidades
-            }
-class       Frasco
-class       BoteDeComprimidos
-class       TabletasEnUnBlister
-class       JarabeEnUnFrasco
-class       MedicamentosEnUnCajón
-class       VacunasEnUnRefrigerador
-class       Venda
-class       VendasEnUnBotiquín
-class       Inventario
-class       Caducidad
-class       Descuento
-class       Alerta
-class       RecepciónDeProductos
-class       CatálogoDeProductos
-class       CatálogoDeProveedores
-class       CatálogoDeMedicamentosControlados
-class       RegistroDeInventario
-class       FacturasDeProveedores
+' Definición de la jerarquía de productos
+abstract class Producto {
+    +caducidad: fecha
+    +numeroDeSerie: string
+}
+class Medicamento
+class Vacuna
+class Venda
+class Jarabe
 
-note left of Blister::nroDeUnidades
-    "Pueden ser pastillas o cápsulas"
+Producto <|-- Medicamento
+Medicamento <|-- Vacuna
+Medicamento <|-- Jarabe
+Producto <|-- Venda
+
+' Definición de clases principales y sus atributos
+class EspecificacionDelProducto {
+    +descripcion: string
+    +precio: decimal
+    +productoID: string
+}
+class Lote {
+    +numeroDeLote: string
+    +fechaDeRecepcion: fecha
+    +cantidadRecibida: integer
+}
+class Deposito {
+    +nombre: string
+}
+class Anaquel
+class Cajon
+class Botiquin
+class RefrigeradorDeVacunas
+class Inventario {
+    +stock: integer
+    +ubicacion: string
+}
+class Pedido {
+    +numeroDePedido: string
+    +fechaDePedido: fecha
+    +estado: string
+}
+class RecepcionDeProductos
+class EncargadoDeCompra
+class FacturasDeProveedores
+class Descuento
+class Alerta
+class RegistroDeInventario
+class CatalogoDeProductos
+class CatalogoDeProveedores
+class CatalogoDeMedicamentosControlados
+
+' Relaciones entre las clases
+' El Pedido está compuesto por PedidoItems
+Pedido "1" -- "1..*" PedidoItem : "contiene"
+class PedidoItem {
+    +cantidad: integer
+}
+' Un PedidoItem se refiere a una EspecificacionDelProducto
+PedidoItem "1" -- "1" EspecificacionDelProducto : "se refiere a"
+
+' El Catálogo de productos agrupa las especificaciones
+CatalogoDeProductos "1" -- "*" EspecificacionDelProducto : "agrupa a"
+
+' La recepción de productos es un evento que crea Lotes y afecta al Inventario
+RecepcionDeProductos "1" -- "1" Pedido : "registra la recepción de"
+RecepcionDeProductos "1" -- "1" Lote : "crea"
+Lote "1" -- "1..*" Producto : "contiene"
+
+' El inventario es un conjunto de registros
+Inventario "1" -- "1..*" RegistroDeInventario : "contiene"
+
+' La ubicación de los productos en el depósito
+Deposito "1" -- "1..*" Anaquel : "contiene"
+Anaquel "1" -- "1..*" Cajon : "contiene"
+Cajon "1" -- "0..*" Lote : "almacena"
+
+RefrigeradorDeVacunas "1" -- "1..*" Lote : "almacena"
+RefrigeradorDeVacunas --* Deposito : "está en"
+
+' Relación de Botiquín con sus productos
+Botiquin "1" -- "1..*" Venda : "contiene"
+
+' Relaciones de responsabilidad y uso
+EncargadoDeCompra "1" -- "1..*" Pedido : "crea"
+EncargadoDeCompra "1" -- "1..*" RecepcionDeProductos : "supervisa"
+FacturasDeProveedores "1" -- "1" Pedido : "se asocia a"
+Alerta "1" -- "1" Producto : "está asociada a la caducidad de"
+Alerta "1" -- "1" Inventario : "está asociada al stock de"
+
+' Relación de especificación a producto, y de producto a empaque
+EspecificacionDelProducto "1" -- "1" Producto : "describe a"
+Producto "1" -- "1" Blister : "viene en"
+class Blister {
+    +nroDeUnidades: integer
+}
+note bottom of Blister
+  Representa el empaque de
+  pastillas o cápsulas.
 end note
 
-EspecificaciónDelProducto "1" -- "*" Producto: "Describe"
-Depósito "1" -- "*" Lote: "Está asignado a"
-VendasEnUnBotiquín "1" -- "*" Venda: "Tiene"
-RefrigeradorDeVacunas "1" -- "*" Vacuna: "Está asignado a"
+Producto "1" -- "1" Frasco : "viene en"
+class Frasco
 
-
-@enduml
+' El Jarabe viene en un frasco
+Jarabe --|> Producto
+Jarabe "1" -- "1" Frasco : "viene en"
