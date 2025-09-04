@@ -1,10 +1,10 @@
-@startuml Pedido de Compras
-title Pedido de Compras Completo
+@startuml Gestionar Pedido de Compra
+title Registrar pedido
 skinparam sequenceMessageAlign center
 actor "Personal de Compras" as pc
 
 boundary PedidoCompraUI <<boundary>>
-control "Conexion" as Conexion <<control>>
+control "PedidoCompraController" as Conexion <<control>>
 entity usuarios <<entity>>
 entity depositos <<entity>>
 entity proveedores <<entity>>
@@ -18,16 +18,22 @@ PedidoCompraUI -> Conexion: iniciarConexion()
 PedidoCompraUI <-- Conexion: ok
 
 
-PedidoCompraUI -> usuarios: obtenerUsuarios()
-PedidoCompraUI <-- usuarios: ok
+PedidoCompraUI -> Conexion: obtenerUsuarios()
+Conexion -> usuarios: obtenerUsuarios()
+Conexion <-- usuarios: ok
+PedidoCompraUI <-- Conexion: usuarios
 
 
-PedidoCompraUI -> depositos: obtenerDepositos()
-PedidoCompraUI <-- depositos: ok
+PedidoCompraUI -> Conexion: obtenerDepositos()
+Conexion -> depositos: obtenerDepositos()
+Conexion <-- depositos: ok
+PedidoCompraUI <-- Conexion: depositos
 
 
-PedidoCompraUI -> proveedores: obtenerProveedores()
-PedidoCompraUI <-- proveedores: ok
+PedidoCompraUI -> Conexion: obtenerProveedores()
+Conexion -> proveedores: obtenerProveedores()
+Conexion <-- proveedores: ok
+PedidoCompraUI <-- Conexion: proveedores
 
 
 pc -> PedidoCompraUI: crearNuevoPedido()
@@ -46,10 +52,15 @@ end
 |||
 pc -> PedidoCompraUI: registrarPedido(ListaProductos)
 
-PedidoCompraUI -> pedidocab
+PedidoCompraUI -> Conexion: registrarPedido(ListaProductos)
+Conexion -> pedidocab: registrarPedido(ListaProductos)
 
 
-pedidocab -> pedidodet
+pedidocab -> pedidodet: registrarPedido(ListaProductos)
+pedidocab <-- pedidodet: ok
+
+Conexion <-- pedidocab: ok
+PedidoCompraUI <-- Conexion: ok
 |||
 pc <-- PedidoCompraUI: mensajeExito()
 @enduml

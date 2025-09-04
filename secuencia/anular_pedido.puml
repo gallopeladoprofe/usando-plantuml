@@ -1,0 +1,54 @@
+@startuml Gestionar Pedido de Compra
+title Anular pedido
+skinparam sequenceMessageAlign center
+actor "Personal de Compras" as pc
+
+boundary PedidoCompraUI <<boundary>>
+control "PedidoCompraController" as Conexion <<control>>
+entity usuarios <<entity>>
+entity depositos <<entity>>
+entity proveedores <<entity>>
+entity pedidocab <<entity>>
+entity pedidodet <<entity>>
+
+pc -> PedidoCompraUI: iniciarRegistrarPedidos()
+
+
+PedidoCompraUI -> Conexion: iniciarConexion()
+PedidoCompraUI <-- Conexion: ok
+
+
+PedidoCompraUI -> Conexion: obtenerUsuarios()
+Conexion -> usuarios: obtenerUsuarios()
+Conexion <-- usuarios: ok
+PedidoCompraUI <-- Conexion: usuarios
+
+
+PedidoCompraUI -> Conexion: obtenerDepositos()
+Conexion -> depositos: obtenerDepositos()
+Conexion <-- depositos: ok
+PedidoCompraUI <-- Conexion: depositos
+
+pc -> PedidoCompraUI: buscarPedido()
+
+PedidoCompraUI -> Conexion: buscarPedido()
+Conexion -> pedidocab:buscarPedido("pendiente")
+Conexion <-- pedidocab: pedidos con estado pendiente
+PedidoCompraUI <-- Conexion: cargarPedidos(pedidos)
+
+pc -> PedidoCompraUI: introducirPedido(pedidoID)
+PedidoCompraUI -> PedidoCompraUI: mostrarPedido()
+
+pc -> PedidoCompraUI: anularPedido(pedidoID)
+PedidoCompraUI -> Conexion: anularPedido(pedidoID)
+Conexion -> pedidocab: anularPedido(pedidoID)
+loop "Según pedidoID"
+    pedidocab -> pedidodet: anularPedidoDetalle(pedidoID)
+    pedidocab <-- pedidodet: ok
+end
+Conexion <-- pedidocab: ok
+PedidoCompraUI <-- Conexion: ok
+
+|||
+pc <-- PedidoCompraUI: mensajeExito()
+@enduml
