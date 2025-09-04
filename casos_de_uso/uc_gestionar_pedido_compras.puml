@@ -1,0 +1,23 @@
+@startuml Gestionar Pedido de Compra
+left to right direction
+title UC1: Gestionar Pedido de Compra
+
+usecase "Gestionar Pedido de Compra" as uc_gestionar_pedido
+
+usecase "Registrar pedido" as uc_registrar_pedido
+
+
+usecase "Anular pedido" as uc_anular_pedido
+
+usecase "Crear Proveedor" as uc_crear_proveedor
+
+:Personal de Compras: as personaldecompras
+
+personaldecompras -- (uc_gestionar_pedido)
+
+(uc_gestionar_pedido) ..> (uc_registrar_pedido): include
+(uc_gestionar_pedido) ..> (uc_anular_pedido): include
+
+(uc_registrar_pedido) <.. (uc_crear_proveedor): extends
+
+@enduml
